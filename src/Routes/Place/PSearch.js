@@ -1,0 +1,1 @@
+export default () => 'Place Search';
