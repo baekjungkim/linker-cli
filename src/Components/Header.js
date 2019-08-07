@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import Modal from 'react-awesome-modal';
+import Login from '../Routes/Login';
+import Join from '../Routes/Join';
 
 const Container = styled.div`
   background-color: white;
@@ -35,38 +38,91 @@ const NavList = styled.ul`
 const NavItem = styled.li`
   display: table-cell;
   width: 5%;
+  :last-child {
+    color: blue;
+  }
+  cursor: pointer;
 `;
 
-function Header() {
-  return (
-    <Container>
-      <Wrapper>
-        <Logo className="fas fa-draw-polygon" />
-        <Nav>
-          <NavList>
-            <NavItem>
-              <Link to="/search">공간찾기</Link>
-            </NavItem>
-            <NavItem>
-              <Link to="/place/manage">공간관리</Link>
-            </NavItem>
-            <NavItem>
-              <Link to="/user">정보수정</Link>
-            </NavItem>
-            <NavItem>
-              <Link to="/login">로그인</Link>
-            </NavItem>
-            <NavItem>
-              <Link to="/logout">로그아웃</Link>
-            </NavItem>
-            <NavItem>
-              <Link to="/join">회원가입</Link>
-            </NavItem>
-          </NavList>
-        </Nav>
-      </Wrapper>
-    </Container>
-  );
+const StyledLink = styled(Link)`
+  color: black;
+`;
+
+const ModalPop = styled.div``;
+
+const ModalClose = styled.a``;
+
+class Header extends Component {
+  state = {
+    visible: false,
+    modalNum: 1,
+  };
+
+  openModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  changeModal = num => {
+    this.setState({
+      modalNum: num,
+    });
+  };
+
+  render() {
+    const { visible, modalNum } = this.state;
+    return (
+      <Container>
+        <Wrapper>
+          <Logo className="fas fa-draw-polygon" />
+          <Nav>
+            <NavList>
+              <NavItem>
+                <StyledLink to="/search">공간찾기</StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/place/manage">공간관리</StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/user">정보수정</StyledLink>
+              </NavItem>
+              <NavItem>
+                <StyledLink to="/logout">로그아웃</StyledLink>
+              </NavItem>
+              <NavItem onClick={() => this.openModal()}>
+                로그인 | 회원가입
+              </NavItem>
+            </NavList>
+          </Nav>
+        </Wrapper>
+        <Modal
+          visible={visible}
+          width="400"
+          height="300"
+          effect="fadeInDown"
+          // onClickAway={() => this.closeModal()}
+        >
+          <ModalPop>
+            <ModalClose onClick={() => this.closeModal()}>Close</ModalClose>
+            {modalNum === 1 && (
+              <Login
+                closeModal={this.closeModal}
+                changeModal={this.changeModal}
+              />
+            )}
+            {modalNum === 2 && <Join changeModal={this.changeModal} />}
+          </ModalPop>
+        </Modal>
+      </Container>
+    );
+  }
 }
 
 export default Header;
