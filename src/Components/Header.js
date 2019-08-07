@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Modal from 'react-awesome-modal';
-import Login from '../Routes/Login';
-import Join from '../Routes/Join';
+import PropTypes from 'prop-types';
+import ToggleDisplay from 'react-toggle-display';
+import Join from './Join';
+import LoginContainer from './LoginContainer';
 
 const Container = styled.div`
   background-color: white;
@@ -55,6 +57,7 @@ const ModalClose = styled.a``;
 class Header extends Component {
   state = {
     visible: false,
+    show: false,
     modalNum: 1,
   };
 
@@ -76,8 +79,16 @@ class Header extends Component {
     });
   };
 
+  handleClick = () => {
+    const { show } = this.state;
+    this.setState({
+      show: !show,
+    });
+  };
+
   render() {
-    const { visible, modalNum } = this.state;
+    const { visible, show, modalNum } = this.state;
+    const { logged, onLogout } = this.props;
     return (
       <Container>
         <Wrapper>
@@ -90,15 +101,24 @@ class Header extends Component {
               <NavItem>
                 <StyledLink to="/place/manage">공간관리</StyledLink>
               </NavItem>
-              <NavItem>
-                <StyledLink to="/user">정보수정</StyledLink>
-              </NavItem>
-              <NavItem>
-                <StyledLink to="/logout">로그아웃</StyledLink>
-              </NavItem>
-              <NavItem onClick={() => this.openModal()}>
-                로그인 | 회원가입
-              </NavItem>
+              {logged ? (
+                <NavItem>
+                  <StyledLink to="/" onClick={this.handleClick}>
+                    정보수정
+                  </StyledLink>
+                  <ToggleDisplay show={show} tag="section">
+                    <StyledLink to="/" onClick={onLogout}>
+                      로그아웃
+                    </StyledLink>
+                  </ToggleDisplay>
+                </NavItem>
+              ) : (
+                // <NavItem>
+                // </NavItem>
+                <NavItem onClick={() => this.openModal()}>
+                  로그인 | 회원가입
+                </NavItem>
+              )}
             </NavList>
           </Nav>
         </Wrapper>
@@ -112,7 +132,7 @@ class Header extends Component {
           <ModalPop>
             <ModalClose onClick={() => this.closeModal()}>Close</ModalClose>
             {modalNum === 1 && (
-              <Login
+              <LoginContainer
                 closeModal={this.closeModal}
                 changeModal={this.changeModal}
               />
@@ -124,5 +144,10 @@ class Header extends Component {
     );
   }
 }
+
+Header.propTypes = {
+  logged: PropTypes.bool.isRequired,
+  onLogout: PropTypes.func.isRequired,
+};
 
 export default Header;

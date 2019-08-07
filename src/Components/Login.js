@@ -67,8 +67,9 @@ class Login extends Component {
       imgUrl,
     });
 
-    const { closeModal } = this.props;
+    const { closeModal, onLogin } = this.props;
     closeModal();
+    onLogin();
   };
 
   responseFail = err => {
@@ -114,6 +115,7 @@ class Login extends Component {
 Login.propTypes = {
   closeModal: PropTypes.func.isRequired,
   changeModal: PropTypes.func.isRequired,
+  onLogin: PropTypes.func.isRequired,
 };
 
 export default Login;
